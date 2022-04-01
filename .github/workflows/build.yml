@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
             name: package
-            path: "react-foldable/*.tgz"
+            path: "*.tgz"
 
   publish:
     name: "Publish to GitHub Packages"
