@@ -52,6 +52,7 @@ jobs:
     runs-on: ubuntu-18.04
     if: github.repository_owner == 'nickvenne' # && github.token != ''
     steps:
+    - uses: actions/checkout@v2
     - name: Upload
       uses: actions/download-artifact@v2
       with:

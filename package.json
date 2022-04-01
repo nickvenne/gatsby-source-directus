@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-directus",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Source data from directus cms",
   "scripts": {
     "build": "babel src --out-dir . --ignore **/__tests__ --ignore **/__fixtures__",
@@ -10,7 +10,8 @@
   },
   "keywords": [
     "gatsby",
-    "gatsby-plugin"
+    "gatsby-plugin",
+    "gatsby-source-plugin"
   ],
   "author": "Nicolas Venne <nicolas.maxvenne@gmail.com>",
   "license": "0BSD",
@@ -41,5 +42,12 @@
   },
   "engines": {
     "node": ">=14.15.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nickvenne/gatsby-source-directus.git"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
   }
 }
