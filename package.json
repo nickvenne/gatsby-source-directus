@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-source-directus",
+  "name": "@nickvenne/gatsby-source-directus",
   "version": "1.1.1",
   "description": "Source data from directus cms",
   "scripts": {
