@@ -44,8 +44,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/nickvenne/gatsby-source-directus.git"
-  },
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
   }
 }
