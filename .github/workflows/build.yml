@@ -44,6 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
             name: package
+            path: "*.tgz"
 
   publish:
     name: "Publish to GitHub Packages"
@@ -61,6 +62,7 @@ jobs:
         registry-url: https://npm.pkg.github.com/
         scope: "@nickvenne"
     - run: echo "registry=https://npm.pkg.github.com/@nickvenne" >> .npmrc
+    - run: ls *.tgz
     - run: yarn publish $(ls *.tgz)
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
