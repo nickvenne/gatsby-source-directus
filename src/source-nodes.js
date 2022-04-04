@@ -32,7 +32,7 @@ export async function sourceNodes(
 
   //Touch all the nodes that are already in the store
   getNodes().forEach(node => {
-    if (node.internal.owner !== `gatsby-source-directus`) {
+    if (node.internal.owner !== `@nickvenne/gatsby-source-directus`) {
       return
     }
     touchNode(node)
@@ -53,7 +53,7 @@ export async function sourceNodes(
 
 
   const syncToken =
-    store.getState().status.plugins?.[`gatsby-source-directus`]?.[
+    store.getState().status.plugins?.[`@nickvenne/gatsby-source-directus`]?.[
       CACHE_SYNC_TOKEN
     ]
 
@@ -83,7 +83,7 @@ export async function sourceNodes(
   // Array of all existing Contentful nodes
   const existingNodes = getNodes().filter(
     n =>
-      n.internal.owner === `gatsby-source-directus`
+      n.internal.owner === `@nickvenne/gatsby-source-directus`
   )
 
   // Report existing, new and updated nodes

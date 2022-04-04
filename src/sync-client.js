@@ -98,7 +98,7 @@ class SyncClient {
   async sync(query) {
     const isInitial = query.initial
     const syncEnv = getSyncEnv(this.pluginOptions)
-    console.log(`Sync environment: ${syncEnv}`)
+    this.reporter.info(`Directus Sync environment: ${syncEnv}`)
     const { data: { content, assets, nextSyncToken, deletedContent = {}, deletedAssets = [], meta } } = await this.instance.get(`${DIRECTUS_SYNC_CONTENT}?env=${syncEnv}${query.nextSyncToken ? `&sync_token=${query.nextSyncToken}` : ``}`)
     let currentSyncData = {
       content: {},

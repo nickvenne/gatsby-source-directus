@@ -36,9 +36,6 @@ const validateDirectusAccess = async pluginOptions => {
 }
 
 export const onPreInit = async ({ store, reporter }, pluginOptions) => {
-
-  console.log(os.userInfo())
-
   try {
     await import(`gatsby-plugin-image/graphql-utils`)
   } catch (err) {
