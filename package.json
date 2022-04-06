@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-source-directus9",
+  "name": "gatsby-source-directus-cms",
   "version": "0.0.0-development",
   "description": "Source data from directus v9.0.0 cms",
   "scripts": {

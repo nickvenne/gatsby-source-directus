@@ -83,7 +83,7 @@ exports.onPreInit = onPreInit;
 const pluginOptionsSchema = ({
   Joi
 }) => Joi.object().keys({
-  host: Joi.string().description(`The base host for all the API requests`).required().empty(),
+  host: Joi.string().description(`The base host for all the API requests, e.g directus.test.com`).required().empty(),
   updatedAtKey: Joi.string().description(`The key of the field that contains the last updated date, defaults to "date_updated`).default("date_updated").empty(),
   useSSL: Joi.boolean().default(true).empty(),
   pageLimit: Joi.number().integer().description(`Number of entries to retrieve from Directus at a time. Due to some technical limitations, the response payload should not be greater than 7MB when pulling content from Directus. If you encounter this issue you can set this param to a lower number than 100, e.g 50.`).default(1000),
