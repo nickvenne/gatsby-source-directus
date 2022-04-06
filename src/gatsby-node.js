@@ -68,7 +68,7 @@ export const pluginOptionsSchema = ({Joi}) =>
     .keys({
       host: Joi.string()
         .description(
-          `The base host for all the API requests`
+          `The base host for all the API requests, e.g directus.test.com`
         )
         .required()
         .empty(),
