@@ -56,8 +56,6 @@ const onPreInit = async ({
   store,
   reporter
 }, pluginOptions) => {
-  console.log(_os.default.userInfo());
-
   try {
     await Promise.resolve().then(() => _interopRequireWildcard(require(`gatsby-plugin-image/graphql-utils`)));
   } catch (err) {

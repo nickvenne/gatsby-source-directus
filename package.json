@@ -1,10 +1,12 @@
 {
   "name": "gatsby-source-directus9",
-  "version": "1.1.1",
+  "version": "0.0.0-development",
   "description": "Source data from directus v9.0.0 cms",
   "scripts": {
     "build": "babel src --out-dir . --ignore **/__tests__ --ignore **/__fixtures__",
-    "watch": "babel -w src --out-dir . --ignore **/__tests__ --ignore **/__fixtures__"
+    "prepare": "npm run build",
+    "watch": "babel -w src --out-dir . --ignore **/__tests__ --ignore **/__fixtures__",
+    "semantic-release": "semantic-release"
   },
   "keywords": [
     "gatsby",
@@ -27,9 +29,13 @@
   "devDependencies": {
     "@babel/cli": "7.15.4",
     "@babel/core": "7.15.5",
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
     "babel-preset-gatsby-package": "2.11.0",
     "cross-env": "7.0.3",
-    "nock": "13.2.4"
+    "husky": "^7.0.4",
+    "nock": "13.2.4",
+    "semantic-release": "^19.0.2"
   },
   "peerDependencies": {
     "gatsby": "^4.0.0",
@@ -43,5 +49,28 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/nickvenne/gatsby-source-directus.git"
+  },
+  "release": {
+    "branches": ["master", "next"]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E  HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "subject-case": [
+        2,
+        "never",
+        [
+          "start-case",
+          "pascal-case"
+        ]
+      ]
+    }
   }
 }
