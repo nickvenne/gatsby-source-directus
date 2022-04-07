@@ -35,15 +35,15 @@ class SyncClient {
   async _callApi(url, limit, ids, fields = false, contentType = false) {
     try {
       let currentPage = 1;
-      let hasData = true
+      let totalCount = 0;
+      let currentCount = 0;
       let result = []
       do {
-        const { data } = await this.instance.get(`${url}?limit=${limit}&page=${currentPage}${fields ? `&${fields}` : ``}${this._getFilterIds(ids)}`)
+        const { data } = await this.instance.get(`${url}?limit=${limit}&meta=total_count&page=${currentPage}${fields ? `&${fields}` : ``}${this._getFilterIds(ids)}`)
         const itemCount = data.data.length
-        if(itemCount === 0) {
-          hasData = false 
-          break
-        } 
+        currentCount += itemCount
+        totalCount = data.meta.total_count
+
         result = result.concat(data.data)
         currentPage++
 
@@ -51,7 +51,8 @@ class SyncClient {
         this.syncProgressTotal += itemCount
         this.syncProgress.total = this.syncProgressTotal
         this.syncProgress.tick(itemCount)
-      } while(hasData)
+        
+      } while(currentCount < totalCount)
 
       if(fields && contentType) {
         for(const item of result) {
