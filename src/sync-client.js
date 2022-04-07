@@ -35,14 +35,16 @@ class SyncClient {
   async _callApi(url, limit, ids, fields = false, contentType = false) {
     try {
       let currentPage = 1;
-      let totalCount = 0;
+      let totalCount = ids.length;
       let currentCount = 0;
       let result = []
       do {
         const { data } = await this.instance.get(`${url}?limit=${limit}&meta=total_count&page=${currentPage}${fields ? `&${fields}` : ``}${this._getFilterIds(ids)}`)
         const itemCount = data.data.length
         currentCount += itemCount
-        totalCount = data.meta.total_count
+        if(ids.length === 0) {
+          totalCount = data.meta.total_count
+        }
 
         result = result.concat(data.data)
         currentPage++
