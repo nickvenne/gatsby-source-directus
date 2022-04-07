@@ -55,6 +55,9 @@ export const buildEntryList = ({ contentTypeItems, currentSyncData }) => {
 
 export const makeId = (id, type) => `${id}__${type}`
 
+let warnOnceForNoSupport = false
+let warnOnceToUpgradeGatsby = false
+
 function directusCreateNodeManifest({
   entry,
   entryNode,
@@ -66,7 +69,7 @@ function directusCreateNodeManifest({
   
   const updatedAt = getUpdated(entry)
 
-  const manifestId = `${entry.id}-${updatedAt}`
+  const manifestId = `${entryNode.directus_collection}-${entryNode.directus_id}-${updatedAt}`
 
   if(createNodeManifestIsSupported) {
 
@@ -166,6 +169,7 @@ export const createNodesForContentType = ({
       ...entry,
       id: entryNodeId,
       directus_id: entry.id,
+      directus_collection: collection,
       children: [],
       internal: {
         type: `${makeTypeName(collection)}`,

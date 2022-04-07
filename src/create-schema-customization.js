@@ -124,6 +124,7 @@ export async function createSchemaCustomization(
       `
         type ${makeTypeName(collection)} implements Node {
           directus_id: String!
+          directus_collection: String!
           id: ID!
           ${getLinkFields(contentTypeItems[collection].fields)}
         }
