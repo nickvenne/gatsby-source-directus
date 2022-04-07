@@ -37,22 +37,6 @@ export const getUpdatedFunc = (updatedAtKey) => {
   }
 }
 
-export const buildEntryList = ({ contentTypeItems, currentSyncData }) => {
-  // Create buckets for each type sys.id that we care about (we will always want an array for each, even if its empty)
-  const map = new Map(
-    contentTypeItems.map(contentType => [contentType.sys.id, []])
-  )
-  // Now fill the buckets. Ignore entries for which there exists no bucket. (Not sure if that ever happens)
-  currentSyncData.content.map(content => {
-    const arr = map.get(content.sys.contentType.sys.id)
-    if (arr) {
-      arr.push(content)
-    }
-  })
-  // Order is relevant, must map 1:1 to contentTypeItems array
-  return contentTypeItems.map(contentType => map.get(contentType.sys.id))
-}
-
 export const makeId = (id, type) => `${id}__${type}`
 
 let warnOnceForNoSupport = false

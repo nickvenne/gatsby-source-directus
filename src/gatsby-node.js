@@ -2,7 +2,6 @@ import origFetch from "node-fetch"
 import fetchRetry from "@vercel/fetch-retry"
 import { CODES } from './report'
 import { polyfillImageServiceDevRoutes } from "gatsby-plugin-utils/polyfill-remote-file"
-import os from "os"
 
 export const onCreateDevServer = ({ app }) => {
   polyfillImageServiceDevRoutes(app)
@@ -95,7 +94,7 @@ export const pluginOptionsSchema = ({Joi}) =>
         .default(50),
       accessToken: Joi.string()
         .description(
-          `Directus delivery api key, when using the Preview API use your Preview API key`
+          `Directus delivery api key`
         )
         .required()
         .empty(),
