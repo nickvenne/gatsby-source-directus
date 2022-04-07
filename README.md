@@ -63,6 +63,10 @@ Send api calls using https vs http. Usefull for connecting to a local instance o
 
 The key for the field which saves the date updated on every piece of content. Only requried when **not** using directus system default `date_updated` field.
 
+**`envId`** [string][optional]
+
+Set a manual dev-env for the directus sync process. This allows to share the sync status between different environments. if `NODE_ENV=development` defaults to `os.userInfo()` data.
+
 **`downloadLocal`** [boolean][optional] [default: `false`]
 
 Downloads and caches `DirectusAssets`'s to the local filesystem. Allows you to query a `DirectusAssets`'s `localFile` field

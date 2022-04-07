@@ -71,6 +71,12 @@ export const pluginOptionsSchema = ({Joi}) =>
         )
         .required()
         .empty(),
+      envId: Joi.string()
+        .description(
+          `The environment ID for the sync status, e.g. dev-123`
+        )
+        .default(null)
+        .empty(),
       updatedAtKey: Joi.string()
         .description(
           `The key of the field that contains the last updated date, defaults to "date_updated`
