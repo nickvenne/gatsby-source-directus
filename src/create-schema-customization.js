@@ -91,7 +91,7 @@ export async function createSchemaCustomization(
   directusTypes.push(
     addRemoteFilePolyfillInterface(
       schema.buildObjectType({
-        name: `DirectusAsset`,
+        name: `DirectusFiles`,
         fields: {
           directus_id: { type: `String!` },
           id: { type: `ID!` },

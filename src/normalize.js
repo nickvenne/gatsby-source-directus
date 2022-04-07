@@ -191,14 +191,14 @@ export const createAssetNodes = ({
   const assetNode = {
     ...asset,
     directus_id: asset.id,
-    id: createNodeId(makeId(asset.id, "DirectusAsset")),
+    id: createNodeId(makeId(asset.id, "directus_files")),
     parent: null,
     children: [],
     url,
     filename: asset.filename_download,
     mimeType: asset.type,
     internal: {
-      type: `DirectusAsset`,
+      type: `DirectusFiles`,
       contentDigest: `${asset.modified_on}`
     }
   }
