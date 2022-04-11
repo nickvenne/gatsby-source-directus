@@ -9,6 +9,7 @@ export const onCreateDevServer = ({ app }) => {
 
 export { createSchemaCustomization } from "./create-schema-customization"
 export { sourceNodes } from "./source-nodes"
+export { createResolvers } from './create-resolvers'
 
 const fetch = fetchRetry(origFetch)
 
@@ -109,6 +110,11 @@ export const pluginOptionsSchema = ({Joi}) =>
           `Downloads and caches DirectusAsset's to the local filesystem.`
         )
         .default(false),
+      customResolvers: Joi.object()
+        .description(
+          `Custom resolvers to be added to the schema.`
+        )
+        .default({}),
       plugins: Joi.array()
     })
     .external(validateDirectusAccess)
