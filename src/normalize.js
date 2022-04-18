@@ -97,21 +97,6 @@ export const createNodesForContentType = ({
 
   const getUpdated = getUpdatedFunc(pluginOptions.updatedAtKey)
 
-  // const contentTypeNode = {
-  //   id: createNodeId(collection),
-  //   parent: null,
-  //   children: [],
-  //   name: collection,~
-  //   collection_fields: contentTypeItems[collection].fields,
-  //   internal: {
-  //     type: `${makeTypeName(collection)}`,
-  //     contentDigest: `${collection}`,
-  //   }
-  // }
-
-  // createNodePromises.push(createNode(contentTypeNode))
-
-
   const contentNodes = content.map(entry => {
     const entryNodeId = createNodeId(makeId(entry.id, collection))
     const existingNode = getNode(entryNodeId)
