@@ -161,14 +161,15 @@ export const createNodesForContentType = ({
       }
     }
 
-
-    directusCreateNodeManifest({
-      getUpdated,
-      reporter,
-      entry,
-      entryNode,
-      unstable_createNodeManifest
-    })
+    if(contentType.hasGatsbyPage) {
+      directusCreateNodeManifest({
+        getUpdated,
+        reporter,
+        entry,
+        entryNode,
+        unstable_createNodeManifest
+      })
+    }
 
     return entryNode
   }).filter(Boolean)
