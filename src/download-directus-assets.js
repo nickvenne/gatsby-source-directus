@@ -54,7 +54,10 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
   await distributeWorkload(
     assetNodes.map(node => async () => {
       let fileNodeID
-      const { directus_id: id } = node
+      const { directus_id: id, filename_download } = node
+      const nameParts = filename_download.split('.');
+      const ext = nameParts.length > 1 ? `.${nameParts.pop()}` : '';
+      const name = nameParts.join('.');
       const remoteDataCacheKey = `directus-asset-${id}`
       const cacheRemoteData = await cache.get(remoteDataCacheKey)
       const url = `${pluginOptions.useSSL ? "https" : "http"}://${pluginOptions.host}/assets/${id}`
@@ -76,6 +79,8 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
             Authorization: `Bearer ${pluginOptions.accessToken}`,
           },
           reporter,
+          ext,
+          name
         })
 
         if (fileNode) {
