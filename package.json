@@ -11,7 +11,8 @@
   "keywords": [
     "gatsby",
     "gatsby-plugin",
-    "gatsby-source-plugin"
+    "gatsby-source-plugin",
+    "directus"
   ],
   "author": "Nicolas Venne <nicolas.maxvenne@gmail.com>",
   "license": "0BSD",
