@@ -37,23 +37,10 @@ export const getUpdatedFunc = (updatedAtKey) => {
   }
 }
 
-export const buildEntryList = ({ contentTypeItems, currentSyncData }) => {
-  // Create buckets for each type sys.id that we care about (we will always want an array for each, even if its empty)
-  const map = new Map(
-    contentTypeItems.map(contentType => [contentType.sys.id, []])
-  )
-  // Now fill the buckets. Ignore entries for which there exists no bucket. (Not sure if that ever happens)
-  currentSyncData.content.map(content => {
-    const arr = map.get(content.sys.contentType.sys.id)
-    if (arr) {
-      arr.push(content)
-    }
-  })
-  // Order is relevant, must map 1:1 to contentTypeItems array
-  return contentTypeItems.map(contentType => map.get(contentType.sys.id))
-}
-
 export const makeId = (id, type) => `${id}__${type}`
+
+let warnOnceForNoSupport = false
+let warnOnceToUpgradeGatsby = false
 
 function directusCreateNodeManifest({
   entry,
@@ -66,7 +53,7 @@ function directusCreateNodeManifest({
   
   const updatedAt = getUpdated(entry)
 
-  const manifestId = `${entry.id}-${updatedAt}`
+  const manifestId = `${entryNode.directus_collection}-${entryNode.directus_id}-${updatedAt}`
 
   if(createNodeManifestIsSupported) {
 
@@ -110,21 +97,6 @@ export const createNodesForContentType = ({
 
   const getUpdated = getUpdatedFunc(pluginOptions.updatedAtKey)
 
-  // const contentTypeNode = {
-  //   id: createNodeId(collection),
-  //   parent: null,
-  //   children: [],
-  //   name: collection,~
-  //   collection_fields: contentTypeItems[collection].fields,
-  //   internal: {
-  //     type: `${makeTypeName(collection)}`,
-  //     contentDigest: `${collection}`,
-  //   }
-  // }
-
-  // createNodePromises.push(createNode(contentTypeNode))
-
-
   const contentNodes = content.map(entry => {
     const entryNodeId = createNodeId(makeId(entry.id, collection))
     const existingNode = getNode(entryNodeId)
@@ -166,6 +138,7 @@ export const createNodesForContentType = ({
       ...entry,
       id: entryNodeId,
       directus_id: entry.id,
+      directus_collection: collection,
       children: [],
       internal: {
         type: `${makeTypeName(collection)}`,
@@ -173,14 +146,15 @@ export const createNodesForContentType = ({
       }
     }
 
-
-    directusCreateNodeManifest({
-      getUpdated,
-      reporter,
-      entry,
-      entryNode,
-      unstable_createNodeManifest
-    })
+    if(contentType.hasGatsbyPage) {
+      directusCreateNodeManifest({
+        getUpdated,
+        reporter,
+        entry,
+        entryNode,
+        unstable_createNodeManifest
+      })
+    }
 
     return entryNode
   }).filter(Boolean)
@@ -203,14 +177,14 @@ export const createAssetNodes = ({
   const assetNode = {
     ...asset,
     directus_id: asset.id,
-    id: createNodeId(makeId(asset.id, "DirectusAsset")),
+    id: createNodeId(makeId(asset.id, "directus_files")),
     parent: null,
     children: [],
     url,
     filename: asset.filename_download,
     mimeType: asset.type,
     internal: {
-      type: `DirectusAsset`,
+      type: `DirectusFiles`,
       contentDigest: `${asset.modified_on}`
     }
   }

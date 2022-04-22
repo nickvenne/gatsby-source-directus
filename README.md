@@ -1,113 +1,85 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Starter for a Gatsby Plugin
-</h1>
+# gatsby-source-directus9
 
-A minimal boilerplate for the essential files Gatsby looks for in a plugin.
+> Source plugin for pulling content, and assets into Gatsby from
+> Directus CMS.
+>
+> NOTE: This source plugin requires custom directus extensions
+> to function properly which are still in development
 
-## 🚀 Quick start
-
-To get started creating a new plugin, you can follow these steps:
-
-1. Initialize a new plugin from the starter with `gatsby new`
+## Install
 
 ```shell
-gatsby new my-plugin https://github.com/gatsbyjs/gatsby-starter-plugin
+npm install gatsby-source-directus9
 ```
 
-If you already have a Gatsby site, you can use it. Otherwise, you can [create a new Gatsby site](https://www.gatsbyjs.com/tutorial/part-0/#create-a-gatsby-site) to test your plugin.
+## How to use
 
-Your directory structure will look similar to this:
+First, you need a way to pass environment variables to the build process, so secrets and other secured data aren't committed to source control. We recommend using [`dotenv`][dotenv] which will then expose environment variables. [Read more about `dotenv` and using environment variables here][envvars]. Then we can _use_ these environment variables and configure our plugin.
 
-```text
-/my-gatsby-site
-├── gatsby-config.js
-└── /src
-    └── /pages
-        └── /index.js
-/my-plugin
-├── gatsby-browser.js
-├── gatsby-node.js
-├── gatsby-ssr.js
-├── index.js
-├── package.json
-└── README.md
-```
+## Restrictions and limitations
 
-With `my-gatsby-site` being your Gatsby site, and `my-plugin` being your plugin. You could also include the plugin in your [site's `plugins` folder](https://www.gatsbyjs.com/docs/loading-plugins-from-your-local-plugins-folder/).
+This plugin has several limitations, please be aware of these:
 
-2. Include the plugin in a Gatsby site
+1. All sync content requires a _updated date_ field which can be set in the plugin options. Make sure this value is updated even on create.
 
-Inside of the `gatsby-config.js` file of your site (in this case, `my-gatsby-site`), include the plugin in the `plugins` array:
+2. References are only attached to content that have a valid relationship. e.g a M2M from A <-> B, which was created from A, there will be a reference from A to B but no reverse from B to A. You will need to also create a field on B.
+
+3. Syncing works from the current env you are running, called from `os.userInfo()`, This is used to remember the difference from the last sync from your environment.
+
+### Usage
 
 ```javascript
+// In your gatsby-config.js
 module.exports = {
   plugins: [
-    // other gatsby plugins
-    // ...
-    require.resolve(`../my-plugin`),
+    {
+      resolve: `gatsby-source-directus9`,
+      options: {
+        host: `directus.example.com`,
+        // Learn about environment variables: https://gatsby.dev/env-vars
+        accessToken: process.env.DIRECTUS_ACCESS_TOKEN,
+      },
+    },
   ],
 }
 ```
 
-The line `require.resolve('../my-plugin')` is what accesses the plugin based on its filepath on your computer, and adds it as a plugin when Gatsby runs.
+### Configuration options
 
-_You can use this method to test and develop your plugin before you publish it to a package registry like npm. Once published, you would instead install it and [add the plugin name to the array](https://www.gatsbyjs.com/docs/using-a-plugin-in-your-site/). You can read about other ways to connect your plugin to your site including using `npm link` or `yarn workspaces` in the [doc on creating local plugins](https://www.gatsbyjs.com/docs/creating-a-local-plugin/#developing-a-local-plugin-that-is-outside-your-project)._
+**`accessToken`** [string][required]
 
-3. Verify the plugin was added correctly
+Directus Access Token, generated on a user with read permissions to content being request.
 
-The plugin added by the starter implements a single Gatsby API in the `gatsby-node` that logs a message to the console. When you run `gatsby develop` or `gatsby build` in the site that implements your plugin, you should see this message.
+**`host`** [string][required]
 
-You can verify your plugin was added to your site correctly by running `gatsby develop` for the site.
+The host for the directus instance. e.g 
+`directus.example.com`
 
-You should now see a message logged to the console in the preinit phase of the Gatsby build process:
+**`useSSL`** [boolean][optional] [default: true]
 
-```shell
-$ gatsby develop
-success open and validate gatsby-configs - 0.033s
-success load plugins - 0.074s
-Loaded gatsby-starter-plugin
-success onPreInit - 0.016s
-...
-```
+Send api calls using https vs http. Usefull for connecting to a local instance of directus.
 
-4. Rename the plugin in the `package.json`
+**`updatedAtKey`** [string][optional] [default: `date_updated`]
 
-When you clone the site, the information in the `package.json` will need to be updated. Name your plugin based off of [Gatsby's conventions for naming plugins](https://www.gatsbyjs.com/docs/naming-a-plugin/).
+The key for the field which saves the date updated on every piece of content. Only requried when **not** using directus system default `date_updated` field.
 
-## 🧐 What's inside?
+**`envId`** [string][optional]
 
-This starter generates the [files Gatsby looks for in plugins](https://www.gatsbyjs.com/docs/files-gatsby-looks-for-in-a-plugin/).
+Set a manual dev-env for the directus sync process. This allows to share the sync status between different environments. if `NODE_ENV=development` defaults to `os.userInfo()` data.
 
-```text
-/my-plugin
-├── .gitignore
-├── gatsby-browser.js
-├── gatsby-node.js
-├── gatsby-ssr.js
-├── index.js
-├── LICENSE
-├── package.json
-└── README.md
-```
+**`downloadLocal`** [boolean][optional] [default: `false`]
 
-- **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
-- **`gatsby-browser.js`**: This file is where Gatsby expects to find any usage of the [Gatsby browser APIs](https://www.gatsbyjs.com/docs/browser-apis/) (if any). These allow customization/extension of default Gatsby settings affecting the browser.
-- **`gatsby-node.js`**: This file is where Gatsby expects to find any usage of the [Gatsby Node APIs](https://www.gatsbyjs.com/docs/node-apis/) (if any). These allow customization/extension of default Gatsby settings affecting pieces of the site build process.
-- **`gatsby-ssr.js`**: This file is where Gatsby expects to find any usage of the [Gatsby server-side rendering APIs](https://www.gatsbyjs.com/docs/ssr-apis/) (if any). These allow customization of default Gatsby settings affecting server-side rendering.
-- **`index.js`**: A file that will be loaded by default when the plugin is [required by another application](https://docs.npmjs.com/creating-node-js-modules#create-the-file-that-will-be-loaded-when-your-module-is-required-by-another-application0). You can adjust what file is used by updating the `main` field of the `package.json`.
-- **`LICENSE`**: This plugin starter is licensed under the 0BSD license. This means that you can see this file as a placeholder and replace it with your own license.
-- **`package.json`**: A manifest file for Node.js projects, which includes things like metadata (the plugin's name, author, etc). This manifest is how npm knows which packages to install for your project.
-- **`README.md`**: A text file containing useful reference information about your plugin.
+Downloads and caches `DirectusAssets`'s to the local filesystem. Allows you to query a `DirectusAssets`'s `localFile` field
 
-## 🎓 Learning Gatsby
+**`pageLimit`** [number][optional] [default: `100`]
 
-If you're looking for more guidance on plugins, how they work, or what their role is in the Gatsby ecosystem, check out some of these resources:
+Number of entries to retrieve from Directus at a time. If you run into payload size limit issues, try to reduce this number to e.g `50`
 
-- The [Creating Plugins](https://www.gatsbyjs.com/docs/creating-plugins/) section of the docs has information on authoring and maintaining plugins yourself.
-- The conceptual guide on [Plugins, Themes, and Starters](https://www.gatsbyjs.com/docs/plugins-themes-and-starters/) compares and contrasts plugins with other pieces of the Gatsby ecosystem. It can also help you [decide what to choose between a plugin, starter, or theme](https://www.gatsbyjs.com/docs/plugins-themes-and-starters/#deciding-which-to-use).
-- The [Gatsby plugin library](https://www.gatsbyjs.com/plugins/) has over 1750 official as well as community developed plugins that can get you up and running faster and borrow ideas from.
+**`assetDownloadWorkers`** [number][optional] [default: `50`]
+
+Number of workers to use when downloading Directus assets. Due to technical limitations, opening too many concurrent requests can cause stalled downloads. If you encounter this issue you can set this param to a lower number than 50, e.g 25.
+
+
+
+[dotenv]: https://github.com/motdotla/dotenv
+[envvars]: https://gatsby.dev/env-vars

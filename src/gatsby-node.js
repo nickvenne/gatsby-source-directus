@@ -2,7 +2,6 @@ import origFetch from "node-fetch"
 import fetchRetry from "@vercel/fetch-retry"
 import { CODES } from './report'
 import { polyfillImageServiceDevRoutes } from "gatsby-plugin-utils/polyfill-remote-file"
-import os from "os"
 
 export const onCreateDevServer = ({ app }) => {
   polyfillImageServiceDevRoutes(app)
@@ -10,6 +9,7 @@ export const onCreateDevServer = ({ app }) => {
 
 export { createSchemaCustomization } from "./create-schema-customization"
 export { sourceNodes } from "./source-nodes"
+export { createResolvers } from './create-resolvers'
 
 const fetch = fetchRetry(origFetch)
 
@@ -72,6 +72,12 @@ export const pluginOptionsSchema = ({Joi}) =>
         )
         .required()
         .empty(),
+      envId: Joi.string()
+        .description(
+          `The environment ID for the sync status, e.g. dev-123`
+        )
+        .default(null)
+        .empty(),
       updatedAtKey: Joi.string()
         .description(
           `The key of the field that contains the last updated date, defaults to "date_updated`
@@ -95,7 +101,7 @@ export const pluginOptionsSchema = ({Joi}) =>
         .default(50),
       accessToken: Joi.string()
         .description(
-          `Directus delivery api key, when using the Preview API use your Preview API key`
+          `Directus delivery api key`
         )
         .required()
         .empty(),
@@ -104,6 +110,11 @@ export const pluginOptionsSchema = ({Joi}) =>
           `Downloads and caches DirectusAsset's to the local filesystem.`
         )
         .default(false),
+      customResolvers: Joi.object()
+        .description(
+          `Custom resolvers to be added to the schema.`
+        )
+        .default({}),
       plugins: Joi.array()
     })
     .external(validateDirectusAccess)

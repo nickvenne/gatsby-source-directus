@@ -99,7 +99,7 @@ export async function sourceNodes(
   }
 
   existingNodes.forEach(node => {
-    if(node.internal.type === "DirectusAsset") {
+    if(node.internal.type === "DirectusFiles") {
       nodeCounts.existingAsset++
     } else {
       nodeCounts.existingContent++
@@ -136,7 +136,7 @@ export async function sourceNodes(
       }
     }
     for(const id of currentSyncData.deletedAssets) {
-      deleteDirectusNode(id, `DirectusAsset`)
+      deleteDirectusNode(id, `DirectusFiles`)
       existingNodes.existingAsset--
     }
     deletionActivity.end()

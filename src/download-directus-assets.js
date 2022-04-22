@@ -41,6 +41,11 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
   // Any DirectusAsset nodes will be downloaded, cached and copied to public/static
   // regardless of if you use `localFile` to link an asset or not.
 
+  if(assetNodes.length === 0) {
+    reporter.info(`No new directus assets to download.`)
+    return;
+  }
+
   const bar = reporter.createProgress(
     `Downloading Directus Assets`,
     assetNodes.length
@@ -49,14 +54,14 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
   await distributeWorkload(
     assetNodes.map(node => async () => {
       let fileNodeID
-      const { directus_id: id } = node
+      const { directus_id: id, filename_download } = node
+      const nameParts = filename_download.split('.');
+      const ext = nameParts.length > 1 ? `.${nameParts.pop()}` : '';
+      const name = nameParts.join('.');
       const remoteDataCacheKey = `directus-asset-${id}`
       const cacheRemoteData = await cache.get(remoteDataCacheKey)
       const url = `${pluginOptions.useSSL ? "https" : "http"}://${pluginOptions.host}/assets/${id}`
 
-      // Avoid downloading the asset again if it's been cached
-      // Note: Contentful Assets do not provide useful metadata
-      // to compare a modified asset to a cached version?
       if (cacheRemoteData && cacheRemoteData.modified_on === node.modified_on) {
         fileNodeID = cacheRemoteData.fileNodeID
         touchNode(getNode(cacheRemoteData.fileNodeID))
@@ -74,6 +79,8 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
             Authorization: `Bearer ${pluginOptions.accessToken}`,
           },
           reporter,
+          ext,
+          name
         })
 
         if (fileNode) {
