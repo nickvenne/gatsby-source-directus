@@ -53,7 +53,7 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
   bar.start()
   await distributeWorkload(
     assetNodes.map(node => async () => {
-      let fileNodeID
+      let fileNodeIDs
       const { directus_id: id, filename_download } = node
       const nameParts = filename_download.split('.');
       const ext = nameParts.length > 1 ? `.${nameParts.pop()}` : '';
@@ -63,12 +63,12 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
       const url = `${pluginOptions.useSSL ? "https" : "http"}://${pluginOptions.host}/assets/${id}`
 
       if (cacheRemoteData && cacheRemoteData.modified_on === node.modified_on) {
-        fileNodeID = cacheRemoteData.fileNodeID
+        fileNodeIDs = cacheRemoteData.fileNodeID
         touchNode(getNode(cacheRemoteData.fileNodeID))
       }
 
       // If we don't have cached data, download the file
-      if (!fileNodeID) {
+      if (!fileNodeIDs) {
         const fileNode = await createRemoteFileNode({
           url,
           store,
@@ -85,13 +85,13 @@ export async function downloadDirectusAssets(gatsbyFunctions) {
 
         if (fileNode) {
           bar.tick()
-          fileNodeID = fileNode.id
+          fileNodeIDs = fileNode.id
           await cache.set(remoteDataCacheKey, { fileNodeID, modified_on: node.modified_on })
         }
       }
 
-      if (fileNodeID) {
-        createNodeField({ node, name: `localFile`, value: fileNodeID })
+      if (fileNodeIDs) {
+        createNodeField({ node, name: `localFile`, value: fileNodeIDs })
       }
 
       return node
