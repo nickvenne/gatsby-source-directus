@@ -75,19 +75,6 @@ export async function createSchemaCustomization(
   }
 
 
-  const directusTypes = [
-    // schema.buildInterfaceType({
-    //   name: `DirectusContent`,
-    //   fields: {
-    //     directus_id: { type: `String!` },
-    //     id: { type: `ID!` },
-    //   },
-    //   extensions: { infer: false },
-    //   interfaces: [`Node`],
-    // })
-  ]
-
-
   directusTypes.push(
     addRemoteFilePolyfillInterface(
       schema.buildObjectType({
