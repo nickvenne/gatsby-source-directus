@@ -57,19 +57,6 @@ export async function fetchContent({ syncToken, contentTypes, pluginOptions, rep
       },
     })
   } finally {
-    // Fix output when there was no new data in Contentful
-    // if (
-    //   currentSyncData?.content.length +
-    //     currentSyncData?.assets.length +
-    //     currentSyncData?.deletedContent.length +
-    //     currentSyncData?.deletedAssets.length ===
-    //   0
-    // ) {
-    //   syncProgress.tick()
-    //   syncProgress.total = 1
-    // }
-
-
     syncProgress.done()
   }
 
