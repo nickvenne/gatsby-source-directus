@@ -75,6 +75,9 @@ export async function createSchemaCustomization(
   }
 
 
+  const directusTypes = []
+
+
   directusTypes.push(
     addRemoteFilePolyfillInterface(
       schema.buildObjectType({
