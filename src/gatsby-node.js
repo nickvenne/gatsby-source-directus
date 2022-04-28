@@ -13,6 +13,18 @@ export { createResolvers } from './create-resolvers'
 
 const fetch = fetchRetry(origFetch)
 
+const checkDirectusHost = (value) => {
+
+  const domainRegex = /(?:(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])|(?:localhost):?\d{0,10}/
+
+  const host = value.match(domainRegex)
+  if(host[0]) {
+    return host[0]
+  }
+  
+  throw new Error("Directus host is not valid.")
+}
+
 const validateDirectusAccess = async pluginOptions => {
   if(process.env.NODE_ENV === `test`) return undefined
 
@@ -71,7 +83,8 @@ export const pluginOptionsSchema = ({Joi}) =>
           `The base host for all the API requests, e.g directus.test.com`
         )
         .required()
-        .empty(),
+        .empty()
+        .custom(checkDirectusHost),
       envId: Joi.string()
         .description(
           `The environment ID for the sync status, e.g. dev-123`
