@@ -19,6 +19,11 @@ function getLinkFields(fields) {
           type: `${makeTypeName(fields[field].junctionCollection)}`,
         })
       }
+    } else if(fields[field].hasHTML) {
+      fieldTypes.push({
+        name: `${field}_images`,
+        type: `[${makeTypeName("directus_files")}]`,
+      })
     }
   }
   return fieldTypes.map(field => `${field.name}: ${field.type} @link`).join("\n")
