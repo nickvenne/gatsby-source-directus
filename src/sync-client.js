@@ -103,6 +103,15 @@ class SyncClient {
     const syncEnv = getSyncEnv(this.pluginOptions)
     this.reporter.info(`Directus Sync environment: ${syncEnv}`)
     const { data: { content, assets, nextSyncToken, deletedContent = {}, deletedAssets = [], meta } } = await this.instance.get(`${DIRECTUS_SYNC_CONTENT}?env=${syncEnv}${query.nextSyncToken ? `&sync_token=${query.nextSyncToken}` : ``}`)
+    if(this.pluginOptions.filterCollections) {
+      for(const key in content) {
+        if(!this.pluginOptions.filterCollections.includes(key)) {
+          delete content[key]
+          if(key in deletedContent)
+            delete deletedContent[key]
+        }
+      }
+    }
     let currentSyncData = {
       content: {},
       assets: [],
@@ -132,8 +141,8 @@ class SyncClient {
     try {
       const { data } = await this.instance.get(DIRECUTS_SYNC_TYPES)
       if(this.pluginOptions.filterCollections) {
-        const filteredTypes = {}
-        for(filter of this.pluginOptions.filterCollections) {
+        const filteredTypes = []
+        for(const filter of this.pluginOptions.filterCollections) {
           if(filter in data) {
             filteredTypes[filter] = data[filter]
           }

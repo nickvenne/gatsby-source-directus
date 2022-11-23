@@ -55,7 +55,8 @@ async function getContentTypesFromDirectus({
   })
 
   // Store processed content types in cache for sourceNodes
-  const CACHE_CONTENT_TYPES = `directus-content-types`
+  const UNIQUE_ID = pluginOptions.host 
+  const CACHE_CONTENT_TYPES = `directus-content-types-${UNIQUE_ID}`
   await cache.set(CACHE_CONTENT_TYPES, contentTypeItems)
 
   return contentTypeItems
@@ -70,7 +71,7 @@ export async function createSchemaCustomization(
 
   let contentTypeItems
   if (process.env.GATSBY_WORKER_ID) {
-    contentTypeItems = await cache.get(`directus-content-types`)
+    contentTypeItems = await cache.get(CACHE_CONTENT_TYPES)
   } else {
     contentTypeItems = await getContentTypesFromDirectus({
       cache,
