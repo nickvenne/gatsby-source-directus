@@ -47,9 +47,9 @@ export async function sourceNodes(
   })
 
   fetchActivity.start()
-
-  const CACHE_SYNC_TOKEN = `directus-sync-token`
-  const CACHE_CONTENT_TYPES = `directus-content-types`
+  const UNIQUE_ID = pluginOptions.host
+  const CACHE_SYNC_TOKEN = `directus-sync-token-${UNIQUE_ID}`
+  const CACHE_CONTENT_TYPES = `directus-content-types-${UNIQUE_ID}`
 
 
   const syncToken =
@@ -66,6 +66,7 @@ export async function sourceNodes(
   const nextSyncToken = currentSyncData.nextSyncToken
 
   actions.setPluginStatus({
+    ...store.getState().status.plugins?.[`gatsby-source-directus9`],
     [CACHE_SYNC_TOKEN]: nextSyncToken,
   })
 

@@ -33,7 +33,7 @@ export async function fetchContent({ syncToken, contentTypes, pluginOptions, rep
         syncSuccess = true
 
       } catch (e) {
-
+        console.log(e)
         if(currentPageLimit <= 1) break;
 
         lastCurrentPageLimit = currentPageLimit

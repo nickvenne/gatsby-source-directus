@@ -128,6 +128,11 @@ export const pluginOptionsSchema = ({Joi}) =>
           `Custom resolvers to be added to the schema.`
         )
         .default({}),
+      filterCollections: Joi.array()
+        .description(
+          `List of collection names to pull from directus`
+        )
+        .default(null),
       plugins: Joi.array()
     })
     .external(validateDirectusAccess)
