@@ -8,10 +8,10 @@
       "name": "Gatsby develop",
       "type": "pwa-node",
       "request": "launch",
-      "program": "/Users/nicolas/Development/directus-plugin-test/node_modules/.bin/gatsby",
+      "program": "/Users/nvenne/Development/mhq-gatsby/node_modules/.bin/gatsby",
       "args": ["develop"],
       "console": "integratedTerminal",
-      "cwd": "/Users/nicolas/Development/directus-plugin-test/"
+      "cwd": "/Users/nvenne/Development/mhq-gatsby"
     },
   ]
 }

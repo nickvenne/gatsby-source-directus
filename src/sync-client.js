@@ -131,6 +131,15 @@ class SyncClient {
   async getContentTypes() {
     try {
       const { data } = await this.instance.get(DIRECUTS_SYNC_TYPES)
+      if(this.pluginOptions.filterCollections) {
+        const filteredTypes = {}
+        for(filter of this.pluginOptions.filterCollections) {
+          if(filter in data) {
+            filteredTypes[filter] = data[filter]
+          }
+        }
+        return filteredTypes
+      }
       return data
     } catch (e) {
       this.reporter.panic({

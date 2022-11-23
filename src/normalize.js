@@ -42,6 +42,28 @@ export const makeId = (id, type) => `${id}__${type}`
 let warnOnceForNoSupport = false
 let warnOnceToUpgradeGatsby = false
 
+function prepareMarkdownNode(id, node, key, text, updateAtKey) {
+  const str = _.isString(text) ? text : ``
+  const updatedAt = getUpdatedFunc(updateAtKey)(node)
+  const textNode = {
+    id,
+    parent: node.id,
+    children: [],
+    [key]: str,
+    [updateAtKey]: updatedAt,
+    internal: {
+      type: _.camelCase(`${node.internal.type} ${key} TextNode`),
+      mediaType: `text/markdown`,
+      content: str,
+      contentDigest: updatedAt,
+    }
+  }
+
+  node.children = node.children.concat([id])
+
+  return textNode
+}
+
 function directusCreateNodeManifest({
   entry,
   entryNode,
@@ -97,6 +119,8 @@ export const createNodesForContentType = ({
 
   const getUpdated = getUpdatedFunc(pluginOptions.updatedAtKey)
 
+  const childrenNodes = []
+
   const contentNodes = content.map(entry => {
     const entryNodeId = createNodeId(makeId(entry.id, collection))
     const existingNode = getNode(entryNodeId)
@@ -116,6 +140,19 @@ export const createNodesForContentType = ({
 
     if(existingNode && getUpdated(existingNode) === getUpdated(entry)) {
       return null
+    }
+
+
+    let entryNode = {
+      id: entryNodeId,
+      directus_id: entry.id,
+      directus_collection: collection,
+      children: [],
+      [pluginOptions.updatedAtKey]: getUpdated(entry),
+      internal: {
+        type: `${makeTypeName(collection)}`,
+        contentDigest: getUpdated(entry)
+      }
     }
 
     //Create reference link for node relationships
@@ -142,20 +179,30 @@ export const createNodesForContentType = ({
             images.push(createNodeId(makeId(fileId, "directus_files")))
           }
           entry[`${entryFieldKey}_images`] = images
+        } else if(field && field.hasMarkdown) {
+          const textNodeId = createNodeId(
+            `${entryNodeId}${entryFieldKey}TextNode`
+          )
+          const existingNode = getNode(textNodeId)
+          if (!existingNode || getUpdated(existingNode) !== getUpdated(entry)) {
+            const textNode = prepareMarkdownNode(
+              textNodeId,
+              entryNode,
+              entryFieldKey,
+              entry[entryFieldKey],
+              pluginOptions.updatedAtKey
+            )
+            childrenNodes.push(textNode)
+            entry[`${entryFieldKey}___NODE`] = textNodeId
+            delete entry[entryFieldKey]
+          }
         }
       }
-    }) 
-
-    let entryNode = {
+    })
+    
+    entryNode = {
       ...entry,
-      id: entryNodeId,
-      directus_id: entry.id,
-      directus_collection: collection,
-      children: [],
-      internal: {
-        type: `${makeTypeName(collection)}`,
-        contentDigest: getUpdated(entry)
-      }
+      ...entryNode
     }
 
     if(contentType.hasGatsbyPage) {
@@ -173,6 +220,9 @@ export const createNodesForContentType = ({
 
 
   contentNodes.forEach(entryNode => {createNodePromises.push(createNode(entryNode))});
+  childrenNodes.forEach(entryNode => {
+    createNodePromises.push(createNode(entryNode))
+  })
 
   return createNodePromises
 }
