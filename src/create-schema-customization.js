@@ -71,6 +71,8 @@ export async function createSchemaCustomization(
 
   let contentTypeItems
   if (process.env.GATSBY_WORKER_ID) {
+    const UNIQUE_ID = pluginOptions.host 
+    const CACHE_CONTENT_TYPES = `directus-content-types-${UNIQUE_ID}`
     contentTypeItems = await cache.get(CACHE_CONTENT_TYPES)
   } else {
     contentTypeItems = await getContentTypesFromDirectus({
