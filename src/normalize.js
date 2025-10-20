@@ -167,8 +167,8 @@ export const createNodesForContentType = ({
               : createNodeId(makeId(entryValue, field.junctionCollection))
           }
         } else if(field && field.hasHTML) {
-          const fileRegex = new RegExp(`(?:(src|data-src)=['"](${pluginOptions.useSSL ? "https" : "http"}:\/\/${pluginOptions.host})?\/assets\/)([%:\/.A-z<_&\s=>0-9;-]+)`, `g`)
-          const fileGroupRegex = new RegExp(`(?:(src|data-src)=['"](${pluginOptions.useSSL ? "https" : "http"}:\/\/${pluginOptions.host})?\/assets\/)([%:\/.A-z<_&\s=>0-9;-]+)`)
+          const fileRegex = new RegExp(`(?:(src|data-src)=['"](${pluginOptions.useSSL ? "https" : "http"}:\/\/${pluginOptions.host})?\/assets\/)([%:\/A-z<_&\s=>0-9;-]+)`, `g`)
+          const fileGroupRegex = new RegExp(`(?:(src|data-src)=['"](${pluginOptions.useSSL ? "https" : "http"}:\/\/${pluginOptions.host})?\/assets\/)([%:\/A-z<_&\s=>0-9;-]+)`)
           const files = entryValue.match(fileRegex)
           if (!files || files.length === 0) return;
           let images = []
